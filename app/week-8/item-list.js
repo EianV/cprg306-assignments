@@ -3,7 +3,7 @@
 import Item from "./item";
 import { useState } from "react";
 
-export default function ItemList({itemsArray}) {
+export default function ItemList({ itemsArray, onItemSelect }) {
   const [sortBy, setSortBy] = useState("name");
   const itemsCopy = structuredClone(itemsArray);
 
@@ -17,13 +17,12 @@ export default function ItemList({itemsArray}) {
   });
 
   return (
-    <div>
+    <div className="mt-8">
       <div className="flex justify-center gap-3 mb-5">
         <button
           onClick={() => setSortBy("name")}
           className={`px-4 py-2 rounded-md font-semibold transition-colors ${
             sortBy === "name"
-
               ? "bg-teal-500 text-white"
               : "bg-gray-600 text-white"
           }`}
@@ -46,6 +45,7 @@ export default function ItemList({itemsArray}) {
             name={item.name}
             quantity={item.quantity}
             category={item.category}
+            onSelect={onItemSelect}
           />
         ))}
       </ul>

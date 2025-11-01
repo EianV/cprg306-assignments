@@ -53,7 +53,7 @@ export default function NewItem({ onAddItem }) {
         onSubmit={handleSubmit}
         className="flex flex-col items-center gap-6 p-8 border-4 border-black w-[1000px] shadow-md"
       >
-        <h1 className="text-lg font-semibold">Web Dev Assignment 7 Increment Button!</h1>
+        <h1 className="text-lg font-semibold">Web Dev Assignment 8</h1>
 
         <div className="w-full">
           <input
