@@ -2,7 +2,7 @@
 
     export default function StudentInfo() {
       const studentName = "Eian Verastigue";
-      const githubRepoLink = "https://github.com/JamesBaes/CPRG304-Assignment1";
+      const githubRepoLink = "https://github.com/EianV/cprg306-assignments";
 
       return (
         <div>
