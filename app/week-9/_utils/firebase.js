@@ -1,5 +1,6 @@
 // Part 2: Firebase code starts
 
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -19,4 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+console.log("API KEY =", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+
 
