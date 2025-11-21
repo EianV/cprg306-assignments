@@ -1,5 +1,3 @@
-// Part 3: auth-context code starts
-
 "use client";
 
 import { useContext, createContext, useState, useEffect } from "react";
@@ -29,8 +27,9 @@ export const AuthContextProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
+
     return () => unsubscribe();
-  }, [user]);
+  }, []); // ✅ important fix
 
   return (
     <AuthContext.Provider value={{ user, gitHubSignIn, firebaseSignOut }}>
@@ -42,5 +41,3 @@ export const AuthContextProvider = ({ children }) => {
 export const useUserAuth = () => {
   return useContext(AuthContext);
 };
-
-// Part 3: auth-context code ends
