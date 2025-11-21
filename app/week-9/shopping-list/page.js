@@ -8,8 +8,10 @@ import { useState } from "react";
 import { useUserAuth } from "../_utils/auth-context";
 
 export default function Page() {
-
   const { user } = useUserAuth();
+
+  const [items, setItems] = useState(itemsData);
+  const [selectedItemName, setSelectedItemName] = useState("");
 
   // If not logged in shopping list won't show
   if (!user) {
@@ -19,9 +21,6 @@ export default function Page() {
       </main>
     );
   }
-
-  const [items, setItems] = useState(itemsData);
-  const [selectedItemName, setSelectedItemName] = useState("");
 
   const handleAddItem = (newItem) => {
     setItems((prevArray) => [...prevArray, newItem]);
