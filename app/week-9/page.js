@@ -1,13 +1,11 @@
 "use client";
-export const dynamic = "force-dynamic";
-
 
 import Link from "next/link";
 import { useUserAuth } from "./_utils/auth-context";
 
 export default function Page() {
   // Part 5: landing page starts
-  const { user, gitHubSignIn, firebaseSignOut: logOut } = useUserAuth();
+  const { user, gitHubSignIn, firebaseSignOut } = useUserAuth();
 
   return (
     <main style={{ padding: "20px" }}>
