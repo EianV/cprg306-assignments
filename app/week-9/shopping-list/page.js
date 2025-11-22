@@ -1,6 +1,4 @@
 "use client";
-export const dynamic = "force-dynamic";
-
 
 import ItemList from "./item-list";
 import NewItem from "./new-item";
@@ -10,10 +8,10 @@ import { useState } from "react";
 import { useUserAuth } from "../_utils/auth-context";
 
 export default function Page() {
-  const { user } = useUserAuth();
-
-  const [items, setItems] = useState(itemsData);
+const [items, setItems] = useState(itemsData);
   const [selectedItemName, setSelectedItemName] = useState("");
+
+  const { user } = useUserAuth();
 
   // If not logged in shopping list won't show
   if (!user) {
@@ -24,6 +22,7 @@ export default function Page() {
     );
   }
 
+  
   const handleAddItem = (newItem) => {
     setItems((prevArray) => [...prevArray, newItem]);
   };
