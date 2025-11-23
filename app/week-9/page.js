@@ -24,22 +24,23 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-900 p-8 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold text-white mb-8">Shopping List App</h1>
+    <main className="min-h-screen p-8 flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-black mb-8">Shopping List App</h1>
+      
       
       {!user ? (
         <div className="text-center">
-          <p className="text-white mb-4">Please log in to continue</p>
+          <p className="text-black mb-4">Please log in to continue</p>
           <button 
             onClick={handleLogin}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            className="px-6 py-3 bg-green-500 text-black rounded-lg hover:bg-green-600 transition-colors"
           >
             Login with GitHub
           </button>
         </div>
       ) : (
         <div className="text-center">
-          <p className="text-white mb-4">
+          <p className="text-black mb-4">
             Welcome, {user.displayName} ({user.email})
           </p>
           <div className="flex gap-4 justify-center">
