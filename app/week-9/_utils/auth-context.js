@@ -14,55 +14,54 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const gitHubSignIn = async () => {
-    try {
-      setError(null);
-      const provider = new GithubAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      return result;
-    } catch (error) {
-      setError(error.message);
-      throw error;
-    }
+  const gitHubSignIn = () => {
+    const provider = new GithubAuthProvider();
+    return signInWithPopup(auth, provider);
   };
 
-  const firebaseSignOut = async () => {
-    try {
-      setError(null);
-      await signOut(auth);
-    } catch (error) {
-      setError(error.message);
-      throw error;
-    }
+  const firebaseSignOut = () => {
+    return signOut(auth);
   };
 
   useEffect(() => {
+    console.log('AuthContext: Setting up auth state listener');
+    
+    // Safety timeout - if auth takes too long, stop loading
+    const timeoutId = setTimeout(() => {
+      console.log('AuthContext: Safety timeout reached');
+      setLoading(false);
+    }, 5000); // 5 second timeout
+
     // Only run on client side
     if (typeof window === 'undefined') {
       setLoading(false);
+      clearTimeout(timeoutId);
       return;
     }
 
     try {
       const unsubscribe = onAuthStateChanged(auth, 
         (currentUser) => {
+          console.log('AuthContext: Auth state changed:', currentUser);
+          clearTimeout(timeoutId);
           setUser(currentUser);
           setLoading(false);
-          setError(null);
         },
         (error) => {
-          console.error('Auth state error:', error);
-          setError(error.message);
+          console.error('AuthContext: Auth state error:', error);
+          clearTimeout(timeoutId);
           setLoading(false);
         }
       );
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        unsubscribe();
+      };
     } catch (error) {
-      console.error('Auth setup error:', error);
-      setError(error.message);
+      console.error('AuthContext: Setup error:', error);
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }, []);
@@ -72,8 +71,7 @@ export const AuthContextProvider = ({ children }) => {
       user, 
       gitHubSignIn, 
       firebaseSignOut, 
-      loading,
-      error 
+      loading 
     }}>
       {children}
     </AuthContext.Provider>
