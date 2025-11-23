@@ -4,8 +4,16 @@ import Link from "next/link";
 import { useUserAuth } from "./_utils/auth-context";
 
 export default function Page() {
-  // Part 5: landing page starts
   const { user, gitHubSignIn, firebaseSignOut } = useUserAuth();
+
+  // Add the logOut function that was missing
+  const logOut = async () => {
+    try {
+      await firebaseSignOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <main style={{ padding: "20px" }}>
