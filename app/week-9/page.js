@@ -4,42 +4,66 @@ import Link from "next/link";
 import { useUserAuth } from "./_utils/auth-context";
 
 export default function Page() {
-  const { user, gitHubSignIn, firebaseSignOut } = useUserAuth();
+  const { user, gitHubSignIn, firebaseSignOut, loading } = useUserAuth();
 
-  // Add the logOut function that was missing
-  const logOut = async () => {
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-900 p-8 flex items-center justify-center">
+        <p className="text-white text-xl">Loading...</p>
+      </main>
+    );
+  }
+
+  const handleLogin = async () => {
+    try {
+      await gitHubSignIn();
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
+
+  const handleLogout = async () => {
     try {
       await firebaseSignOut();
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Logout error:", error);
     }
   };
 
   return (
-    <main style={{ padding: "20px" }}>
-      {/* If the user is not logged in, show login button */}
-      {!user && (
-        <>
-          <h1>Welcome!</h1>
-          <button onClick={gitHubSignIn}>Login with GitHub</button>
-        </>
-      )}
-
-      {/* If the user is logged in, show welcome message */}
-      {user && (
-        <>
-          <p>
+    <main className="min-h-screen bg-gray-900 p-8 flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-white mb-8">Shopping List App</h1>
+      
+      {!user ? (
+        <div className="text-center">
+          <p className="text-white mb-4">Please log in to continue</p>
+          <button 
+            onClick={handleLogin}
+            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+          >
+            Login with GitHub
+          </button>
+        </div>
+      ) : (
+        <div className="text-center">
+          <p className="text-white mb-4">
             Welcome, {user.displayName} ({user.email})
           </p>
-
-          <button onClick={logOut}>Logout</button>
-
-          <br /><br />
-
-          <Link href="/week-9/shopping-list">
-            Go to Shopping List
-          </Link>
-        </>
+          <div className="flex gap-4 justify-center">
+            <button 
+              onClick={handleLogout}
+              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Logout
+            </button>
+            <Link 
+              href="/week-9/shopping-list"
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Go to Shopping List
+            </Link>
+          </div>
+        </div>
       )}
     </main>
   );

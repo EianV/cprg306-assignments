@@ -1,13 +1,8 @@
-// Part 2: Firebase code starts
 
-
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -17,10 +12,21 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+let app;
+let auth;
 
-console.log("API KEY =", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+if (typeof window !== 'undefined') {
+  // Client-side only
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+} else {
+  // Server-side 
+  auth = {
+    currentUser: null,
+    onAuthStateChanged: () => () => {},
+    signInWithPopup: () => Promise.reject(new Error('Firebase auth not available on server')),
+    signOut: () => Promise.reject(new Error('Firebase auth not available on server'))
+  };
+}
 
-
+export { auth };
