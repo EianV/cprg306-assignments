@@ -14,25 +14,55 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const gitHubSignIn = () => {
-    const provider = new GithubAuthProvider();
-    return signInWithPopup(auth, provider);
+  const gitHubSignIn = async () => {
+    try {
+      setError(null);
+      const provider = new GithubAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      return result;
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
   };
 
-  const firebaseSignOut = () => {
-    return signOut(auth);
+  const firebaseSignOut = async () => {
+    try {
+      setError(null);
+      await signOut(auth);
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
-      });
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const unsubscribe = onAuthStateChanged(auth, 
+        (currentUser) => {
+          setUser(currentUser);
+          setLoading(false);
+          setError(null);
+        },
+        (error) => {
+          console.error('Auth state error:', error);
+          setError(error.message);
+          setLoading(false);
+        }
+      );
 
       return () => unsubscribe();
-    } else {
+    } catch (error) {
+      console.error('Auth setup error:', error);
+      setError(error.message);
       setLoading(false);
     }
   }, []);
@@ -42,7 +72,8 @@ export const AuthContextProvider = ({ children }) => {
       user, 
       gitHubSignIn, 
       firebaseSignOut, 
-      loading 
+      loading,
+      error 
     }}>
       {children}
     </AuthContext.Provider>

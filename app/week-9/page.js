@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useUserAuth } from "./_utils/auth-context";
 
 export default function Page() {
-  const { user, gitHubSignIn, firebaseSignOut, loading } = useUserAuth();
+  const { user, gitHubSignIn, firebaseSignOut, loading, error } = useUserAuth();
 
   if (loading) {
     return (
@@ -33,6 +33,13 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-gray-900 p-8 flex flex-col items-center justify-center">
       <h1 className="text-4xl font-bold text-white mb-8">Shopping List App</h1>
+      
+      {error && (
+        <div className="bg-red-500 text-white p-4 rounded-lg mb-4 max-w-md">
+          <p className="font-bold">Error:</p>
+          <p>{error}</p>
+        </div>
+      )}
       
       {!user ? (
         <div className="text-center">
