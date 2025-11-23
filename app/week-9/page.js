@@ -1,85 +1,55 @@
 "use client";
 
-import Link from "next/link";
-import { useAuth } from "./_utils/use-auth";
-
 export default function Page() {
-  const { user, loading, error, signInWithGitHub, logout } = useAuth();
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-gray-900 p-8 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-xl mb-2">Loading...</p>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-        </div>
-      </main>
-    );
-  }
-
-  const handleLogin = async () => {
-    try {
-      await signInWithGitHub();
-    } catch (err) {
-      console.error('Login error:', err);
-    }
+  // Test if environment variables are loading
+  const envVars = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-  };
+  console.log('Environment Variables Test:', envVars);
+
+  const allSet = Object.values(envVars).every(value => value);
 
   return (
     <main className="min-h-screen bg-gray-900 p-8 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold text-white mb-8">Shopping List App</h1>
+      <h1 className="text-4xl font-bold text-white mb-8">Environment Variables Test</h1>
       
-      {error && (
-        <div className="bg-red-500 text-white p-4 rounded-lg mb-6 max-w-md text-center">
-          <p className="font-bold">Error</p>
-          <p className="text-sm mt-1">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-2 px-3 py-1 bg-red-600 text-white text-xs rounded"
-          >
-            Reload Page
-          </button>
+      <div className="bg-gray-800 p-6 rounded-lg max-w-md">
+        <div className="space-y-3">
+          {Object.entries(envVars).map(([key, value]) => (
+            <div key={key} className="flex justify-between items-center">
+              <span className="text-white text-sm">{key}:</span>
+              <span className={value ? "text-green-400" : "text-red-400"}>
+                {value ? "✅" : "❌"}
+              </span>
+            </div>
+          ))}
         </div>
-      )}
-      
-      {!user ? (
-        <div className="text-center">
-          <p className="text-white mb-4">Please log in to continue</p>
-          <button 
-            onClick={handleLogin}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-          >
-            Login with GitHub
-          </button>
-        </div>
-      ) : (
-        <div className="text-center">
-          <p className="text-white mb-4">
-            Welcome, {user.displayName} ({user.email})
+        
+        <div className="mt-6 p-4 bg-gray-700 rounded">
+          <p className="text-white text-center font-bold">
+            {allSet ? "All variables are set! 🎉" : "Some variables are missing 😞"}
           </p>
-          <div className="flex gap-4 justify-center">
-            <button 
-              onClick={handleLogout}
-              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-            >
-              Logout
-            </button>
-            <Link 
-              href="/week-9/shopping-list"
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Go to Shopping List
-            </Link>
-          </div>
+          {allSet && (
+            <p className="text-green-400 text-sm text-center mt-2">
+              Firebase should work now!
+            </p>
+          )}
         </div>
+      </div>
+
+      {allSet && (
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Test Again
+        </button>
       )}
     </main>
   );

@@ -1,8 +1,8 @@
-// firebase.js
+// _utils/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
+// Simple Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -12,16 +12,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Create a function to initialize Firebase
-function initFirebase() {
-  if (typeof window !== "undefined") {
-    // Client-side only
-    const app = initializeApp(firebaseConfig);
-    return getAuth(app);
-  }
-  return null;
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-// Initialize and export auth
-const auth = initFirebase();
 export { auth };
