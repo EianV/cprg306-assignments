@@ -8,21 +8,28 @@ import { useState } from "react";
 import { useUserAuth } from "../_utils/auth-context";
 
 export default function Page() {
-const [items, setItems] = useState(itemsData);
+  const [items, setItems] = useState(itemsData);
   const [selectedItemName, setSelectedItemName] = useState("");
+  const { user, firebaseSignOut } = useUserAuth();
 
-  const { user } = useUserAuth();
-
-  // If not logged in shopping list won't show
+  // If not logged in, show message
   if (!user) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <p className="text-2xl text-white">You must be logged in to view this page.</p>
+      <main className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <p className="text-2xl text-white mb-4">Access Denied</p>
+          <p className="text-white">Please log in to view the shopping list.</p>
+          <Link 
+            href="/week-9"
+            className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Go to Login
+          </Link>
+        </div>
       </main>
     );
   }
 
-  
   const handleAddItem = (newItem) => {
     setItems((prevArray) => [...prevArray, newItem]);
   };
@@ -33,13 +40,31 @@ const [items, setItems] = useState(itemsData);
       .trim()
       .replace(/[\u{1F600}-\u{1F6FF}]/gu, "")
       .trim();
-
     setSelectedItemName(cleanedName);
   };
 
+  const handleLogout = async () => {
+    try {
+      await firebaseSignOut();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-black-100 p-8">
-      <h1 className="text-6xl text-center font-bold mb-8">Shopping List</h1>
+    <main className="min-h-screen bg-gray-900 p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-white">Shopping List</h1>
+        <div className="flex items-center gap-4">
+          <span className="text-white">Welcome, {user.displayName}</span>
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
